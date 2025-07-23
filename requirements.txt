@@ -18,4 +18,6 @@ python-multipart
 uvicorn
 jinja2
 imblearn
+dotenv
+from_root
 -e .
