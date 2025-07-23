@@ -18,7 +18,7 @@ log_file_path = os.path.join(log_dir_path, LOG_FILE)
 def configure_logger():
     # Create a custom logger
     logger = logging.getLogger()
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel('DEBUG')
     
     # Define formatter
     formatter = logging.Formatter("[ %(asctime)s ] %(name)s - %(levelname)s - %(message)s")
