@@ -15,3 +15,10 @@
 # except Exception as e:
 #     logger.info(e)
 #     raise MyException(e,sys)
+
+
+
+# Check the Data ingestion Code
+from src.pipline.training_pipeline import TrainPipeline
+pipe = TrainPipeline()
+pipe.run_pipeline()
