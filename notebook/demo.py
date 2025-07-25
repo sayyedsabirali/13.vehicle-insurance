@@ -18,7 +18,7 @@
 
 
 
-# Check the Data ingestion Code
+# Check the data validation code 
 from src.pipline.training_pipeline import TrainPipeline
 pipe = TrainPipeline()
 pipe.run_pipeline()
