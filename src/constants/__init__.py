@@ -25,14 +25,14 @@ TEST_FILE_NAME: str = "test.csv"
 SCHEMA_FILE_PATH = os.path.join("config", "schema.yaml")
 
 
-AWS_ACCESS_KEY_ID_ENV_KEY = "AWS_ACCESS_KEY_ID"
-AWS_SECRET_ACCESS_KEY_ENV_KEY = "AWS_SECRET_ACCESS_KEY"
+AWS_ACCESS_KEY_ID_ENV_KEY = os.getenv("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY_ENV_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
 REGION_NAME = "us-east-1"
 
 
-"""
-Data Ingestion related constant start with DATA_INGESTION VAR NAME
-"""
+
+# Data Ingestion related constant start with DATA_INGESTION VAR NAME
+
 DATA_INGESTION_COLLECTION_NAME: str = "Proj1-Data"
 DATA_INGESTION_DIR_NAME: str = "data_ingestion"
 DATA_INGESTION_FEATURE_STORE_DIR: str = "feature_store"
@@ -71,7 +71,7 @@ MIN_SAMPLES_SPLIT_RANDOM_STATE: int = 101
 MODEL Evaluation related constants
 """
 MODEL_EVALUATION_CHANGED_THRESHOLD_SCORE: float = 0.02
-MODEL_BUCKET_NAME = "my-model-mlopsproj"
+MODEL_BUCKET_NAME = "vehicle-sabir"
 MODEL_PUSHER_S3_KEY = "model-registry"
 
 

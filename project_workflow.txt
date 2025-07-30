@@ -61,21 +61,8 @@
       * Attach policy >> select AdministratorAccess >> next >> create user
       * Go to the user >> Security Credentials >> Access Keys >> Create access key
       * Select CLI >> agree to condition >> next >> Create Access Key >> download csv file
-      * Set env variables with above csv values using below method:
-      ====================================================================================
-         >> Set env var from bash terminal: <<
-         export AWS_ACCESS_KEY_ID="AWS_ACCESS_KEY_ID"
-         export AWS_SECRET_ACCESS_KEY="AWS_SECRET_ACCESS_KEY"
-         >> Check env var from bash terminal: <<
-         echo $AWS_ACCESS_KEY_ID
-         echo $AWS_SECRET_ACCESS_KEY
-
-         >> Set env var from powershell terminal: <<
-         $env:AWS_ACCESS_KEY_ID="AWS_ACCESS_KEY_ID"
-         $env:AWS_SECRET_ACCESS_KEY="AWS_SECRET_ACCESS_KEY"
-         >> Check env var from powershell terminal: <<
-         echo $env:AWS_ACCESS_KEY_ID
-         echo $env:AWS_SECRET_ACCESS_KEY
+      * Set env variables 
+      
       ====================================================================================
       * Now add the access key, secret key, region name to constants.__init__.py
       * Add code to src.configuration.aws_connection.py file (To work with AWS S3 service)
