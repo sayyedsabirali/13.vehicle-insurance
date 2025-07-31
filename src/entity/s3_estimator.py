@@ -51,10 +51,6 @@ class Proj1Estimator:
 
 
     def predict(self,dataframe:DataFrame):
-        """
-        :param dataframe:
-        :return:
-        """
         try:
             if self.loaded_model is None:
                 self.loaded_model = self.load_model()
