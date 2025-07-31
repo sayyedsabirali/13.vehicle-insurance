@@ -96,7 +96,7 @@
         >> Image: Ubuntu >> AMI: Ubuntu Server 24.04 (free tier) >> Instance: T2 Medium (~chargeable-3.5rs/hr)
         >> create new key pair (name: proj1key) >> allow for https and http traffic >> storage: 30gb >> Launch
         >> Go to instance >> click on "Connect" >> Connect using EC2 Instance Connect 
-        >> Connect (Terminal will be launched) 
+        >> Connect (Terminal will be launched)
 
 28. Open EC2 and Install docker in EC2 Machine:
       ## Optinal
