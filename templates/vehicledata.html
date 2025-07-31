@@ -4,256 +4,384 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vehicle Insurance Prediction</title>
-    <!-- Tailwind CSS for styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Inter -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Use the Inter font family */
+        /* --- 1. Global Styles & Typography --- */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+        :root {
+            --primary-color: #8E44AD; /* Vibrant Purple */
+            --primary-color-dark: #7D3C98;
+            --secondary-color: #3b4252; /* Dark Sidebar BG */
+            --background-color: #f4f7fa;
+            --card-bg: #ffffff;
+            --text-color: #34495e;
+            --text-light: #abb2bf; /* Lighter text for dark sidebar */
+            --text-on-dark: #eceff4;
+            --border-color: #e5e9f2;
+            --shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            display: flex;
+            min-height: 100vh;
         }
-        /* Custom styles for a subtle background pattern */
-        body {
-            background-color: #f8fafc; /* slate-50 */
-            background-image: radial-gradient(#d1d5db 0.5px, transparent 0.5px), radial-gradient(#d1d5db 0.5px, #f8fafc 0.5px);
-            background-size: 20px 20px;
-            background-position: 0 0, 10px 10px;
+
+        /* --- 2. Sidebar Navigation --- */
+        .sidebar {
+            width: 260px;
+            background-color: var(--secondary-color);
+            height: 100vh;
+            padding: 20px;
+            border-right: 1px solid #434c5e;
+            position: fixed;
+            top: 0;
+            left: 0;
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
         }
-        /* Custom styling for form inputs */
-        .form-input {
-            @apply block w-full pl-10 pr-3 py-2 mt-1 text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow duration-200;
+
+        .sidebar .logo {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 40px;
+            color: var(--text-on-dark);
+            padding-left: 10px;
+            letter-spacing: 1px;
         }
-        .form-select {
-             @apply block w-full pl-10 pr-3 py-2 mt-1 text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow duration-200 appearance-none;
+        .sidebar .logo span {
+            color: var(--primary-color);
         }
-        .form-label {
-            @apply text-gray-600 font-medium text-sm;
+
+        .sidebar nav { flex-grow: 1; }
+        .sidebar nav ul { list-style: none; }
+        .sidebar nav li { margin-bottom: 10px; }
+        .sidebar nav a {
+            display: flex;
+            align-items: center;
+            padding: 14px 15px;
+            text-decoration: none;
+            color: var(--text-light);
+            font-weight: 500;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
         }
-        .input-icon {
-            @apply absolute inset-y-0 left-0 flex items-center pl-3 top-6;
+        .sidebar nav a:hover {
+            background-color: #434c5e;
+            color: var(--text-on-dark);
+        }
+        .sidebar nav a.active {
+            background: linear-gradient(90deg, var(--primary-color), var(--primary-color-dark));
+            color: var(--text-on-dark);
+            box-shadow: 0 4px 10px rgba(142, 68, 173, 0.4);
+        }
+        .sidebar nav a svg {
+            margin-right: 15px;
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+        
+        /* --- 3. Main Content & Header --- */
+        .main-content {
+            flex-grow: 1;
+            margin-left: 260px;
+            padding: 30px;
+            transition: margin-left 0.3s ease;
+        }
+
+        .main-content header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+            animation: fadeInSlideUp 0.5s ease-out forwards;
+        }
+        
+        .main-content header h1 {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .header-actions a {
+            background: linear-gradient(90deg, var(--primary-color), var(--primary-color-dark));
+            color: white;
+            padding: 12px 22px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .header-actions a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(142, 68, 173, 0.4);
+        }
+        
+        /* --- 4. Prediction Form --- */
+        .form-container {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+            animation: fadeInSlideUp 0.5s 0.2s ease-out forwards;
+            opacity: 0;
+        }
+
+        .prediction-result {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            animation: popIn 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+        }
+        .prediction-result.yes {
+            background-color: #e8f6f3;
+            color: #1abc9c;
+            border: 1px solid #a3e4d7;
+        }
+        .prediction-result.no {
+            background-color: #fdedec;
+            color: #e74c3c;
+            border: 1px solid #fadbd8;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            animation: fadeInSlideUp 0.5s ease-out forwards;
+        }
+        
+        .form-group:nth-child(1) { animation-delay: 0.3s; }
+        .form-group:nth-child(2) { animation-delay: 0.35s; }
+        .form-group:nth-child(3) { animation-delay: 0.4s; }
+        .form-group:nth-child(4) { animation-delay: 0.45s; }
+        .form-group:nth-child(5) { animation-delay: 0.5s; }
+        .form-group:nth-child(6) { animation-delay: 0.55s; }
+        .form-group:nth-child(7) { animation-delay: 0.6s; }
+        .form-group:nth-child(8) { animation-delay: 0.65s; }
+        .form-group:nth-child(9) { animation-delay: 0.7s; }
+
+        .form-group label {
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .form-group input, .form-group select {
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(142, 68, 173, 0.2);
+        }
+
+        .submit-btn {
+            grid-column: 1 / -1;
+            padding: 15px;
+            border: none;
+            background: linear-gradient(90deg, var(--primary-color), var(--primary-color-dark));
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            opacity: 0;
+            animation: fadeInSlideUp 0.5s 0.8s ease-out forwards;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(142, 68, 173, 0.4);
+        }
+
+        /* --- 5. Animation Keyframes --- */
+        @keyframes fadeInSlideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(0.5); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* --- 6. Responsive Design --- */
+        @media (max-width: 992px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); box-shadow: 0 0 40px rgba(0,0,0,0.1); }
+            .main-content { margin-left: 0; }
+            .menu-toggle { display: block; }
+        }
+        .menu-toggle {
+            display: none; position: fixed; top: 20px; left: 20px; z-index: 1001;
+            background: white; border: 1px solid var(--border-color); padding: 10px;
+            border-radius: 50%; cursor: pointer; box-shadow: var(--shadow);
         }
     </style>
 </head>
-<body class="antialiased text-gray-800">
+<body>
 
-    <div class="min-h-screen flex flex-col items-center justify-center p-4">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="logo">Insure<span>Predict</span></div>
+        <nav>
+            <ul>
+                <li><a href="#" class="active">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+                    Dashboard</a></li>
+            </ul>
+        </nav>
+    </aside>
 
-        <div class="w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row">
-            <!-- Left Side: Information and Result Display -->
-            <div class="w-full md:w-1/2 p-8 lg:p-12 bg-blue-600 text-white flex flex-col justify-between">
-                <div>
-                    <h1 class="text-3xl lg:text-4xl font-bold leading-tight">Vehicle Insurance Cross-Sell Prediction</h1>
-                    <p class="mt-4 text-blue-100">
-                        Yah tool ek machine learning model ka upyog karke bhavishyavani karta hai ki customer gadi ka bima kharidne mein ruchi rakhega ya nahi.
-                        Bhavishyavani prapt karne ke liye form bharein.
-                    </p>
-                </div>
-                <!-- Prediction Result Display -->
-                <div id="result-container" class="mt-8">
-                    {% if context and context != 'Rendering' %}
-                    <div class="bg-white/20 p-6 rounded-xl">
-                        <h2 class="text-xl font-semibold text-white">Bhavishyavani ka parinaam:</h2>
-                        <p id="prediction-result" class="text-3xl font-bold mt-2 
-                            {% if 'Yes' in context %} text-green-300 {% else %} text-red-300 {% endif %}">
-                            {{ context }}
-                        </p>
-                        <p class="text-sm text-blue-200 mt-2">Yah customer ki sambhavit ruchi ko darshata hai.</p>
-                    </div>
-                    {% else %}
-                     <div class="bg-white/20 p-6 rounded-xl">
-                        <h2 class="text-xl font-semibold text-white">Bhavishyavani ka parinaam:</h2>
-                        <p class="text-2xl font-bold mt-2 text-blue-200">Input ka intezar hai...</p>
-                     </div>
-                    {% endif %}
-                </div>
-            </div>
-
-            <!-- Right Side: Form -->
-            <div class="w-full md:w-1/2 p-8 lg:p-12 bg-gray-50">
-                <h2 class="text-2xl font-bold text-gray-800">Customer Details</h2>
-                <p class="text-sm text-gray-500 mt-1">Grahak ki jankari bharein</p>
-                
-                <!-- The form submits data to your FastAPI backend -->
-                <form action="/" method="post" class="mt-6" id="prediction-form">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
-                        <!-- Age -->
-                        <div class="relative">
-                            <label for="Age" class="form-label">Age</label>
-                             <div class="input-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" /></svg>
-                            </div>
-                            <input type="number" name="Age" id="Age" class="form-input" placeholder="e.g., 45" required>
-                        </div>
-
-                        <!-- Gender -->
-                        <div class="relative">
-                            <label for="Gender" class="form-label">Gender</label>
-                             <div class="input-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.5 16.5a.5.5 0 01.5-.5h8a.5.5 0 010 1H6a.5.5 0 01-.5-.5zM12 13a1 1 0 100-2 1 1 0 000 2zm-4-1a1 1 0 11-2 0 1 1 0 012 0zm2-3a1 1 0 100-2 1 1 0 000 2zm4-1a1 1 0 11-2 0 1 1 0 012 0z" clip-rule="evenodd" /><path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4z" /></svg>
-                            </div>
-                            <select name="Gender" id="Gender" class="form-select" required>
-                                <option value="1">Male</option>
-                                <option value="0">Female</option>
-                            </select>
-                        </div>
-                        
-                        <!-- Driving License -->
-                        <div class="relative">
-                            <label for="Driving_License" class="form-label">Driving License</label>
-                             <div class="input-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 012-2h2a2 2 0 012 2v1m-4 0h4" /></svg>
-                            </div>
-                            <select name="Driving_License" id="Driving_License" class="form-select" required>
-                                <option value="1">Yes</option>
-                                <option value="0">No</option>
-                            </select>
-                        </div>
-
-                        <!-- Previously Insured -->
-                        <div class="relative">
-                            <label for="Previously_Insured" class="form-label">Previously Insured</label>
-                            <div class="input-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" /><path fill-rule="evenodd" d="M4 5a2 2 0 012-2h8a2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3z" clip-rule="evenodd" /></svg>
-                            </div>
-                            <select name="Previously_Insured" id="Previously_Insured" class="form-select" required>
-                                <option value="0">No</option>
-                                <option value="1">Yes</option>
-                            </select>
-                        </div>
-                        
-                         <!-- Vehicle Age -->
-                        <div class="relative">
-                            <label for="Vehicle_Age" class="form-label">Vehicle Age</label>
-                            <div class="input-icon">
-                               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M1.5 6A2.5 2.5 0 014 3.5h12A2.5 2.5 0 0118.5 6v2.5a2.5 2.5 0 01-2.5 2.5H15v-1a1 1 0 00-1-1H6a1 1 0 00-1 1v1H4A2.5 2.5 0 011.5 8.5V6zM4 12a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1z" clip-rule="evenodd" /></svg>
-                            </div>
-                            <select id="Vehicle_Age" class="form-select" required>
-                                <option value="1-2_Years">1-2 Years</option>
-                                <option value="lt_1_Year">&lt; 1 Year</option>
-                                <option value="gt_2_Years">&gt; 2 Years</option>
-                            </select>
-                            <input type="hidden" name="Vehicle_Age_lt_1_Year" id="Vehicle_Age_lt_1_Year" value="0">
-                            <input type="hidden" name="Vehicle_Age_gt_2_Years" id="Vehicle_Age_gt_2_Years" value="0">
-                        </div>
-
-                        <!-- Vehicle Damage -->
-                        <div class="relative">
-                            <label for="Vehicle_Damage_Yes" class="form-label">Vehicle Damage</label>
-                            <div class="input-icon">
-                               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.21 3.03-1.742 3.03H4.42c-1.532 0-2.492-1.696-1.742-3.03l5.58-9.92zM10 13a1 1 0 110-2 1 1 0 010 2zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
-                            </div>
-                            <select name="Vehicle_Damage_Yes" id="Vehicle_Damage_Yes" class="form-select" required>
-                                <option value="1">Yes</option>
-                                <option value="0">No</option>
-                            </select>
-                        </div>
-
-                        <!-- Annual Premium -->
-                        <div class="sm:col-span-2 relative">
-                            <label for="Annual_Premium" class="form-label">Annual Premium</label>
-                            <div class="input-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor"><path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.5 2.5 0 004 0V7.15a2.5 2.5 0 00-4 0v.268a2.5 2.5 0 00-4 0v1.698a2.5 2.5 0 004 0V7.418z" /><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm0-2a6 6 0 100-12 6 6 0 000 12z" clip-rule="evenodd" /></svg>
-                            </div>
-                            <input type="number" step="0.01" name="Annual_Premium" id="Annual_Premium" class="form-input" placeholder="e.g., 40454.0" required>
-                        </div>
-                        
-                        <!-- Policy Sales Channel -->
-                        <div class="relative">
-                            <label for="Policy_Sales_Channel" class="form-label">Policy Sales Channel</label>
-                            <div class="input-icon">
-                               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor"><path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 01-2 2H4a2 2 0 01-2-2V5zm14 1a1 1 0 11-2 0 1 1 0 012 0zM2 13a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 01-2 2H4a2 2 0 01-2-2v-2zm14 1a1 1 0 11-2 0 1 1 0 012 0z" /></svg>
-                            </div>
-                            <input type="number" step="0.01" name="Policy_Sales_Channel" id="Policy_Sales_Channel" class="form-input" placeholder="e.g., 26.0" required>
-                        </div>
-
-                        <!-- Region Code -->
-                        <div class="relative">
-                            <label for="Region_Code" class="form-label">Region Code</label>
-                            <div class="input-icon">
-                               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" /></svg>
-                            </div>
-                            <input type="number" step="0.01" name="Region_Code" id="Region_Code" class="form-input" placeholder="e.g., 28.0" required>
-                        </div>
-
-                        <!-- Vintage -->
-                        <div class="sm:col-span-2 relative">
-                            <label for="Vintage" class="form-label">Vintage (Days with company)</label>
-                            <div class="input-icon">
-                               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" /></svg>
-                            </div>
-                            <input type="number" name="Vintage" id="Vintage" class="form-input" placeholder="e.g., 217" required>
-                        </div>
-                    </div>
-
-                    <!-- Submit Button -->
-                    <div class="pt-6">
-                        <button type="submit" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
-                            Get Prediction
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- Train Button Section -->
-        <div class="w-full max-w-4xl mt-4 text-center">
-             <button id="train-button" class="bg-gray-700 text-white font-semibold py-2 px-6 rounded-lg hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all">
-                Train Model
-            </button>
-            <p id="train-status" class="text-sm text-gray-500 mt-2"></p>
-        </div>
+    <!-- Hamburger Menu (Mobile) -->
+    <div class="menu-toggle">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
     </div>
 
+    <!-- Main Content Area -->
+    <main class="main-content">
+        <header>
+            <h1>Insurance Response Prediction</h1>
+            <div class="header-actions">
+                <a href="/train">Train Model</a>
+            </div>
+        </header>
+
+        <div class="form-container">
+            <!-- This section will display the prediction result from FastAPI -->
+            {% if context and context != "Rendering" %}
+            <div class="prediction-result {% if 'Yes' in context %}yes{% else %}no{% endif %}">
+                Prediction Result: <strong>{{ context }}</strong>
+            </div>
+            {% endif %}
+
+            <form action="/" method="post" class="form-grid">
+                <!-- Row 1 -->
+                <div class="form-group">
+                    <label for="Age">Age</label>
+                    <input type="number" id="Age" name="Age" placeholder="e.g., 45" required>
+                </div>
+                <div class="form-group">
+                    <label for="Annual_Premium">Annual Premium</label>
+                    <input type="number" id="Annual_Premium" name="Annual_Premium" placeholder="e.g., 40454" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="Vintage">Vintage (Days with company)</label>
+                    <input type="number" id="Vintage" name="Vintage" placeholder="e.g., 217" required>
+                </div>
+
+                <!-- Row 2 -->
+                <div class="form-group">
+                    <label for="Gender">Gender</label>
+                    <select id="Gender" name="Gender" required>
+                        <option value="1">Male</option>
+                        <option value="0">Female</option>
+                    </select>
+                </div>
+                 <div class="form-group">
+                    <label for="Driving_License">Has Driving License?</label>
+                    <select id="Driving_License" name="Driving_License" required>
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="Previously_Insured">Previously Insured?</label>
+                    <select id="Previously_Insured" name="Previously_Insured" required>
+                        <option value="0">Yes</option>
+                        <option value="1">No</option>
+                    </select>
+                </div>
+
+                <!-- Row 3 -->
+                <div class="form-group">
+                    <label for="Vehicle_Age">Vehicle Age</label>
+                    <select id="Vehicle_Age" name="Vehicle_Age" required onchange="updateVehicleAgeFields(this.value)">
+                        <option value="lt_1_Year">&lt; 1 Year</option>
+                        <option value="1-2_Year">1-2 Year</option>
+                        <option value="gt_2_Years">&gt; 2 Years</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="Vehicle_Damage_Yes">Vehicle Damaged?</label>
+                    <select id="Vehicle_Damage_Yes" name="Vehicle_Damage_Yes" required>
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="Policy_Sales_Channel">Policy Sales Channel</label>
+                    <input type="number" id="Policy_Sales_Channel" name="Policy_Sales_Channel" placeholder="e.g., 26.0" step="0.01" required>
+                </div>
+                
+                <!-- Hidden fields for one-hot encoded Vehicle_Age -->
+                <input type="hidden" id="Vehicle_Age_lt_1_Year" name="Vehicle_Age_lt_1_Year" value="1">
+                <input type="hidden" id="Vehicle_Age_gt_2_Years" name="Vehicle_Age_gt_2_Years" value="0">
+                <input type="hidden" id="Region_Code" name="Region_Code" value="28.0"> <!-- Default value as it's not a primary input -->
+
+                <button type="submit" class="submit-btn">Predict</button>
+            </form>
+        </div>
+    </main>
+    
     <script>
-        // This script handles the logic for the 'Vehicle Age' dropdown
-        document.getElementById('prediction-form').addEventListener('submit', function(event) {
-            const vehicleAgeSelect = document.getElementById('Vehicle_Age');
-            const selectedAge = vehicleAgeSelect.value;
-            
-            const lt1YearInput = document.getElementById('Vehicle_Age_lt_1_Year');
-            const gt2YearsInput = document.getElementById('Vehicle_Age_gt_2_Years');
-
-            lt1YearInput.value = 0;
-            gt2YearsInput.value = 0;
-
-            if (selectedAge === 'lt_1_Year') {
-                lt1YearInput.value = 1;
-            } else if (selectedAge === 'gt_2_Years') {
-                gt2YearsInput.value = 1;
+        // JavaScript for mobile menu toggle
+        document.addEventListener('DOMContentLoaded', () => {
+            const menuToggle = document.querySelector('.menu-toggle');
+            const sidebar = document.querySelector('.sidebar');
+            if (menuToggle && sidebar) {
+                menuToggle.addEventListener('click', () => sidebar.classList.toggle('open'));
             }
         });
 
-        // This script handles the "Train Model" button click
-        document.getElementById('train-button').addEventListener('click', function() {
-            const statusEl = document.getElementById('train-status');
-            statusEl.textContent = 'Training started... This may take a moment.';
-            statusEl.classList.remove('text-green-500', 'text-red-500');
-            statusEl.classList.add('text-gray-500');
+        // JavaScript to handle the one-hot encoding for Vehicle Age based on dropdown selection
+        function updateVehicleAgeFields(selectedValue) {
+            const lt1Year = document.getElementById('Vehicle_Age_lt_1_Year');
+            const gt2Years = document.getElementById('Vehicle_Age_gt_2_Years');
+            
+            // Reset both fields
+            lt1Year.value = 0;
+            gt2Years.value = 0;
 
-            fetch('/train')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.text();
-                })
-                .then(data => {
-                    console.log(data);
-                    statusEl.textContent = 'Training completed successfully!';
-                    statusEl.classList.remove('text-gray-500');
-                    statusEl.classList.add('text-green-500');
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    statusEl.textContent = `An error occurred during training.`;
-                    statusEl.classList.remove('text-gray-500');
-                    statusEl.classList.add('text-red-500');
-                });
-        });
+            // Set the correct field based on selection
+            if (selectedValue === 'lt_1_Year') {
+                lt1Year.value = 1;
+            } else if (selectedValue === 'gt_2_Years') {
+                gt2Years.value = 1;
+            }
+        }
     </script>
-
 </body>
 </html>
